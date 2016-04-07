@@ -1,54 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:clickable="false"
+    android:background="#f2f2f2">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
 
-        <TableLayout
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:stretchColumns="0,1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Nombre"
+                android:id="@+id/name"
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/name"
-                    android:text="SOME STUFF"
-                    android:layout_column="0"
-                    android:textColor="#000000"
-                    android:layout_marginLeft="10dp"
-                    android:padding="3dp"
-                    android:layout_marginTop="15dp">
-                </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Pegado a"
+                android:id="@+id/nextTo"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:textColor="#000000" />
 
-                <TextView
-                    android:id="@+id/statusDate"
-                    android:text="SOME STUFFdos"
-                    android:layout_column="1"
-                    android:textColor="#000000"
-                    android:layout_marginRight="10dp"
-                    android:padding="3dp"
-                    android:layout_marginTop="15dp">
-                </TextView>
-            </TableRow>
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/nextTo"
-                    android:text="SOME STUFF"
-                    android:layout_column="0"
-                    android:textColor="#000000"
-                    android:layout_marginLeft="10dp"
-                    android:padding="3dp"
-                    android:layout_marginTop="5dp">
-                </TextView>
-            </TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="StatusDate"
+                android:id="@+id/statusDate"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="24dp"
+                android:textColor="#282727"
+                android:textStyle="italic" />
 
-        </TableLayout>
+        </RelativeLayout>
+
 
     </ScrollView>
 
