@@ -21,6 +21,7 @@ import com.tilatina.guardcheck.Utillities.ServiceStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
                 intent.setClass(getApplicationContext(), ServiceDetail.class);
                 intent.putExtra("name", serviceStatus.getName());
                 intent.putExtra("statusDate", serviceStatus.getStatusDate());
+                intent.putExtra("id", serviceStatus.getId());
+                intent.putExtra("entitiesId", serviceStatus.getEntitiesId());
                 startActivity(intent);
             }
 
@@ -144,30 +147,37 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void prepareServicesData() {
-
-        ServiceStatus serviceStatus = new ServiceStatus("Jaime", "Reportó", "5km");
+        
+        ServiceStatus serviceStatus = new ServiceStatus(1, 2, "Jaime", "Reportó", "5km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus("Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus("Brayan", "No reportó", "50km");
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus("Alberto", "No reportó", "50km");
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus("Roberto", "No reportó", "50km");
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatusList.add(serviceStatus);serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus("Toño", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatusList.add(serviceStatus);serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus("Alberto", "No reportó", "50km");
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatusList.add(serviceStatus);serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus("Alberto", "No reportó", "50km");
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus("Alberto", "No reportó", "50km");
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus("Alberto", "No reportó", "50km");
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus("Alberto", "No reportó", "50km");
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus("Alberto", "No reportó", "50km");
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatusList.add(serviceStatus);
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatusList.add(serviceStatus);
+        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
         mAdapter.notifyDataSetChanged();
     }

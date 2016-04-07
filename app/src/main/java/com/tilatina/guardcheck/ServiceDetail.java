@@ -26,9 +26,12 @@ public class ServiceDetail extends AppCompatActivity {
 
 
         Bundle intent = getIntent().getExtras();
+        int id = intent.getInt("id");
+        int entitiesId = intent.getInt("entitiesId");
         String name = intent.getString("name", null);
         if (null != name) {
-            Log.d("JAIME...", String.format("El nombre es %s", name));
+            Log.d("JAIME...", String.format("El nombre es %s, el id del evento es %s y el número de" +
+                    " servicio es %s", name, id, entitiesId));
         } else {
             Log.d("JAIME...", String.format("Nada que comentar"));
         }

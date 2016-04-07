@@ -4,12 +4,14 @@ package com.tilatina.guardcheck.Utillities;
  * Created by jaime on 7/04/16.
  */
 public class ServiceStatus {
-    private int id;
+    private int id, entitiesId;
     private String name, statusDate, nextTo;
 
     public ServiceStatus(){}
 
-    public ServiceStatus(String name, String statusDate, String nextTo) {
+    public ServiceStatus(int id, int entitiesId, String name, String statusDate, String nextTo) {
+        this.id = id;
+        this.entitiesId = entitiesId;
         this.name = name;
         this.statusDate = statusDate;
         this.nextTo = nextTo;
@@ -21,6 +23,14 @@ public class ServiceStatus {
 
     private void setId(int id) {
         this.id = id;
+    }
+
+    public int getEntitiesId() {
+        return entitiesId;
+    }
+
+    public void setEntitiesId(int entitiesId) {
+        this.entitiesId = entitiesId;
     }
 
     public String getName() {
