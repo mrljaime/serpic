@@ -1,11 +1,11 @@
 package com.tilatina.guardcheck;
 
-import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,9 +23,7 @@ import com.tilatina.guardcheck.Utillities.Preferences;
 import com.tilatina.guardcheck.Utillities.ServiceStatus;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,24 +79,39 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        Intent intent = new Intent();
         switch (item.getItemId()) {
             case R.id.logout:
                 Preferences.deletePreference(getSharedPreferences(
                         Preferences.MYPREFERENCES, MODE_PRIVATE), "user_id");
                 Log.d("JAIME...", "Le has picado a cerrar sesión");
-                Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
                 return false;
             case R.id.filters:
-                Toast.makeText(getApplicationContext(), "Filtros", Toast.LENGTH_SHORT).show();
+                intent.setClass(getApplicationContext(), FiltersActivity.class);
+                startActivityForResult(intent, 1);
                 return false;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("JAIME...", "En onActivityResult");
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(getApplicationContext(),
+                        String.format("Filtrado por : %s", data.getStringExtra("filter")),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    //Some things to make useful the recycler view
 
     public interface ClickListener {
         void onClick(View view, int position);
