@@ -1,6 +1,8 @@
 package com.tilatina.guardcheck;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -21,6 +23,7 @@ import com.tilatina.guardcheck.Utillities.Preferences;
 import com.tilatina.guardcheck.Utillities.ServiceStatus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -88,7 +91,10 @@ public class MainActivity extends AppCompatActivity {
                 intent.setClass(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 finish();
-                return true;
+                return false;
+            case R.id.filters:
+                Toast.makeText(getApplicationContext(), "Filtros", Toast.LENGTH_SHORT).show();
+                return false;
             default:
                 return super.onOptionsItemSelected(item);
         }

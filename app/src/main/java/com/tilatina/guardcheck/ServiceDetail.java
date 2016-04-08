@@ -1,16 +1,28 @@
 package com.tilatina.guardcheck;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ServiceDetail extends AppCompatActivity {
@@ -34,6 +46,11 @@ public class ServiceDetail extends AppCompatActivity {
         } else {
             Log.d("JAIME...", String.format("Nada que comentar"));
         }
+
+        //This will change de text of the action bar for the name of the service.
+        getSupportActionBar().setTitle(name);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         //Seek bar for status
         seekBar = (SeekBar) findViewById(R.id.changeStatusSeek);
@@ -108,6 +125,83 @@ public class ServiceDetail extends AppCompatActivity {
             }
         });
 
+        //This button put lat and long from the service place.
+        Button isHere = (Button) findViewById(R.id.isHere);
+        isHere.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                double[] latLng = getLatLong();
+                if (null != latLng) {
+                    Toast.makeText(getApplicationContext(),
+                            String.format("Latitud = %s, Longitud = %s", latLng[0], latLng[1]),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+        });
+
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return false;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    //This method will change, but for now, is for get the lat and the long of the device.
+    private double[] getLatLong() {
+        LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        Location location;
+        double [] latLng = null;
+        try {
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Log.d("JAIME...", "El problema esta en que no hay gps encendido");
+                printLocationError("No se ha podido obtener localización, por favor encienda sus datos y/o " +
+                        "gps para poder obtenerla");
+                return latLng;
+            }
+
+            if (null != locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)) {
+                Log.d("JAIME...", "Debería dar posición por la comprobación GPS");
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                latLng = new double[] {location.getLatitude(), location.getLongitude()};
+
+                return latLng;
+            }
+
+            if (null != locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)) {
+                Log.d("JAIME...", "Debería dar posición por la comprobación NETWORK");
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                latLng = new double[] {location.getLatitude(), location.getLongitude()};
+
+                return latLng;
+            }
+        }catch (SecurityException e) {
+            printLocationError("Debes aceptar los permisos para poder utilizar la geolocalización");
+        }
+
+        return latLng;
+    }
+
+    //This method is called for display error message when GPS is disabled
+    private void printLocationError(String message) {
+        new AlertDialog.Builder(ServiceDetail.this)
+                .setTitle("")
+                .setMessage(message)
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
 }
