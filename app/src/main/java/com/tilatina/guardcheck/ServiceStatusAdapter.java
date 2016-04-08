@@ -1,6 +1,8 @@
 package com.tilatina.guardcheck;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,12 @@ public class ServiceStatusAdapter extends RecyclerView.Adapter<ServiceStatusAdap
 
     @Override
     public void onBindViewHolder(GuardHolder holder, int position) {
+        //Log.d("JAIME...", String.format("Posición %s", position));
+        if (((position+1) % 2) == 0) {
+            holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        } else {
+            holder.itemView.setBackgroundColor(Color.parseColor("#DADADA"));
+        }
         ServiceStatus serviceStatus = serviceStatuses.get(position);
         holder.name.setText(serviceStatus.getName());
         holder.statusDate.setText(serviceStatus.getStatusDate());

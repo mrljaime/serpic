@@ -3,6 +3,7 @@ package com.tilatina.guardcheck;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
                 @Override
                 public boolean onSingleTapUp(MotionEvent e) {
-                    return true;
+                   return true;
                 }
 
                 @Override
@@ -124,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-
             View child = rv.findChildViewUnder(e.getX(), e.getY());
             if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
                 clickListener.onClick(child, rv.getChildPosition(child));
@@ -142,12 +142,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-
     private void prepareServicesData() {
-        
+
         ServiceStatus serviceStatus = new ServiceStatus(1, 2, "Jaime", "Reportó", "5km");
         serviceStatusList.add(serviceStatus);
         serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
