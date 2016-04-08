@@ -105,7 +105,9 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 Toast.makeText(getApplicationContext(),
-                        String.format("Filtrado por : %s", data.getStringExtra("filter")),
+                        String.format("Filtrado por : %s, ordenado por %s de manera %s",
+                                data.getStringExtra("filter"), data.getStringExtra("sortBy"),
+                                data.getStringExtra("sort")),
                         Toast.LENGTH_SHORT).show();
             }
         }
