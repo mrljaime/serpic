@@ -4,23 +4,32 @@
     android:layout_height="match_parent"
     android:weightSum="1">
 
-    <Button
-        android:layout_width="143dp"
-        android:layout_height="wrap_content"
-        android:text="Aquí"
-        android:id="@+id/isHere"
-        android:background="@color/greenForActions"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <Button
-        android:layout_width="143dp"
-        android:layout_height="wrap_content"
-        android:text="Llévame"
-        android:id="@+id/takeMePlace"
-        android:background="@color/greenForActions"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"/>
+        <Button
+            android:layout_width="143dp"
+            android:layout_height="wrap_content"
+            android:text="Llévame"
+            android:id="@+id/takeMePlace"
+            android:background="@color/greenForActions"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="15dp" />
+
+        <Button
+            android:layout_width="143dp"
+            android:layout_height="wrap_content"
+            android:text="Aquí"
+            android:id="@+id/isHere"
+            android:background="@color/greenForActions"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignTop="@+id/takeMePlace"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp" />
+    </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -59,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Sin registro"
+            android:text="Pendiente"
             android:id="@+id/textView2"
             android:layout_marginLeft="18dp"
             android:textColor="#000000" />
@@ -68,7 +77,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Visto"
+            android:text="En revisión"
             android:id="@+id/textView3"
             android:layout_alignBottom="@+id/textView2"
             android:layout_centerHorizontal="true"

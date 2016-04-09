@@ -130,13 +130,29 @@ public class ServiceDetail extends AppCompatActivity {
         isHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double[] latLng = getLatLong();
-                if (null != latLng) {
-                    Toast.makeText(getApplicationContext(),
-                            String.format("Latitud = %s, Longitud = %s", latLng[0], latLng[1]),
-                            Toast.LENGTH_SHORT)
-                            .show();
-                }
+
+                new AlertDialog.Builder(ServiceDetail.this)
+                        .setTitle("")
+                        .setMessage("¿Confirma cambiar la ubicación del servicio?")
+                        .setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                double[] latLng = getLatLong();
+                                if (null != latLng) {
+                                    Toast.makeText(getApplicationContext(),
+                                            String.format("Latitud = %s, Longitud = %s", latLng[0], latLng[1]),
+                                            Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
             }
         });
 
