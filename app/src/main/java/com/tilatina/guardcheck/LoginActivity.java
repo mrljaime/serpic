@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
 import com.tilatina.guardcheck.Dao.User;
 import com.tilatina.guardcheck.Utillities.Preferences;
 import com.tilatina.guardcheck.Utillities.WebService;
