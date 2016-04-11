@@ -67,7 +67,7 @@ public class ServiceDetail extends AppCompatActivity {
 
                 //The multiple of progress change is of one,
                 //For put the progress in the center of the
-                // field, when progress is equals to 1, the progress is set in 2
+                // field, when progress is equals to 1, the progress is seted in 2
                 if (progress == 1) {
                     seekBar.setProgress(2);
 
@@ -155,9 +155,6 @@ public class ServiceDetail extends AppCompatActivity {
                         .show();
             }
         });
-
-
-
     }
 
     @Override
