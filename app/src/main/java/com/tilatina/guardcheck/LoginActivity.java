@@ -57,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
             intent.setClass(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
+            return;
         }
 
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(me);

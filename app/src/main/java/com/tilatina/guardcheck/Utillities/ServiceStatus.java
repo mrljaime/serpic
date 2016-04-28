@@ -1,60 +1,85 @@
 package com.tilatina.guardcheck.Utillities;
 
+import android.app.Service;
+
 /**
  * Created by jaime on 7/04/16.
  */
 public class ServiceStatus {
-    private int id, entitiesId;
-    private String name, statusDate, nextTo;
+    private int id;
+    private double lat;
+    private double lng;
+    private String name, statusColor, nextTo;
 
     public ServiceStatus(){}
 
-    public ServiceStatus(int id, int entitiesId, String name, String statusDate, String nextTo) {
+    public ServiceStatus(int id, String name, String statusColor, String nextTo, double lat, double lng) {
         this.id = id;
-        this.entitiesId = entitiesId;
         this.name = name;
-        this.statusDate = statusDate;
+        this.statusColor = statusColor;
         this.nextTo = nextTo;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     public int getId() {
         return id;
     }
 
-    private void setId(int id) {
+    public ServiceStatus setId(int id) {
         this.id = id;
-    }
 
-    public int getEntitiesId() {
-        return entitiesId;
-    }
-
-    public void setEntitiesId(int entitiesId) {
-        this.entitiesId = entitiesId;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public ServiceStatus setName(String name) {
         this.name = name;
+
+        return this;
     }
 
-    public String getStatusDate() {
-        return statusDate;
+    public String getstatusColor() {
+        return statusColor;
     }
 
-    public void setStatusDate(String statusDate) {
-        this.statusDate = statusDate;
+    public ServiceStatus setstatusColor(String statusColor) {
+        this.statusColor = statusColor;
+
+        return this;
     }
 
     public String getNextTo() {
         return nextTo;
     }
 
-    public void setNextTo(String nextTo) {
+    public ServiceStatus setNextTo(String nextTo) {
         this.nextTo = nextTo;
+
+        return this;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public ServiceStatus setLat(double lat) {
+        this.lat = lat;
+
+        return this;
+    }
+
+    public ServiceStatus setLng(double lng) {
+        this.lng = lng;
+
+        return this;
+    }
+
+    public double getLng() {
+        return lng;
     }
 
 }

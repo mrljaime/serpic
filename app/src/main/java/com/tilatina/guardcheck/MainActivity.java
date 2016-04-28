@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -19,8 +20,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import com.tilatina.guardcheck.Utillities.LocationGPS;
 import com.tilatina.guardcheck.Utillities.Preferences;
 import com.tilatina.guardcheck.Utillities.ServiceStatus;
+import com.tilatina.guardcheck.Utillities.WebService;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private List<ServiceStatus> serviceStatusList = new ArrayList<>();
     private RecyclerView recyclerView;
     private ServiceStatusAdapter mAdapter = new ServiceStatusAdapter(serviceStatusList);
+    Context me = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), ServiceDetail.class);
                 intent.putExtra("name", serviceStatus.getName());
-                intent.putExtra("statusDate", serviceStatus.getStatusDate());
                 intent.putExtra("id", serviceStatus.getId());
-                intent.putExtra("entitiesId", serviceStatus.getEntitiesId());
+                intent.putExtra("lat", serviceStatus.getLat());
+                intent.putExtra("lng", serviceStatus.getLng());
                 startActivity(intent);
             }
 
@@ -66,7 +74,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }));
 
-        prepareServicesData();
+        if (LocationGPS.isLocationEnabled(me)){
+            Location location = LocationGPS.getCurrentLocation(me);
+            if (null == location) {
+                Toast.makeText(me, "No se ha encontrado posición", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            prepareServicesData(me, String.format("%s",location.getLatitude()),
+                    String.format("%s", location.getLongitude()));
+        }
 
     }
 
@@ -163,39 +180,77 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void prepareServicesData() {
+    private void prepareServicesData(Context context, String lat, String lng){
 
-        ServiceStatus serviceStatus = new ServiceStatus(1, 2, "Jaime", "Reportó", "5km");
+        String user = Preferences
+                .getPreference(context.getSharedPreferences(Preferences.MYPREFERENCES, MODE_PRIVATE),
+                        Preferences.USERID, null);
+        WebService.getServicesAction(context, user, "", "", "", "", lat, lng,
+                new WebService.ServicesSuccessListener() {
+                    @Override
+                    public void onSuccess(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            JSONArray services = jsonResponse.getJSONArray("elements");
+
+                            for (int i = 0; i < services.length(); i++) {
+                                Log.d(Preferences.MYPREFERENCES, services.getJSONObject(i).toString());
+                                ServiceStatus serviceStatus = new ServiceStatus();
+                                serviceStatus.setId(services.getJSONObject(i).getInt("id"));
+                                serviceStatus.setName(services.getJSONObject(i).getString("name"));
+                                serviceStatus.setNextTo(services.getJSONObject(i).getString("distance"));
+                                serviceStatus.setLat(services.getJSONObject(i).getDouble("lat"));
+                                serviceStatus.setLng(services.getJSONObject(i).getDouble("lng"));
+                                serviceStatus.setstatusColor(services.getJSONObject(i).getString("statusColor"));
+
+                                serviceStatusList.add(serviceStatus);
+                            }
+                            mAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new WebService.ServicesErrorListener() {
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
+
+        /**
+        ServiceStatus serviceStatus = new ServiceStatus(1,"Jaime", "Reportó", "5km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
-        serviceStatusList.add(serviceStatus);serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
+        serviceStatusList.add(serviceStatus);serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
-        serviceStatusList.add(serviceStatus);serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
+        serviceStatusList.add(serviceStatus);serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
-        serviceStatusList.add(serviceStatus);serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
+        serviceStatusList.add(serviceStatus);serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
-        serviceStatus = new ServiceStatus(1, 2, "Daniel", "Reportó", "50km");
+        serviceStatus = new ServiceStatus(1,  "Daniel", "Reportó", "50km");
         serviceStatusList.add(serviceStatus);
         mAdapter.notifyDataSetChanged();
+         */
     }
 }

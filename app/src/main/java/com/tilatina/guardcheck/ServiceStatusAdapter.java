@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.tilatina.guardcheck.Utillities.ServiceStatus;
@@ -21,12 +22,14 @@ public class ServiceStatusAdapter extends RecyclerView.Adapter<ServiceStatusAdap
 
     public class GuardHolder extends RecyclerView.ViewHolder {
         public TextView name, statusDate, nextTo;
+        public Button statusColorButton;
 
         public GuardHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.name);
             statusDate = (TextView) view.findViewById(R.id.statusDate);
             nextTo = (TextView) view.findViewById(R.id.nextTo);
+            statusColorButton = (Button) view.findViewById(R.id.statusColorButton);
         }
     }
 
@@ -52,8 +55,18 @@ public class ServiceStatusAdapter extends RecyclerView.Adapter<ServiceStatusAdap
         }
         ServiceStatus serviceStatus = serviceStatuses.get(position);
         holder.name.setText(serviceStatus.getName());
-        holder.statusDate.setText(serviceStatus.getStatusDate());
-        holder.nextTo.setText(serviceStatus.getNextTo());
+        holder.nextTo.setText(String.format("%s km",serviceStatus.getNextTo().substring(0, 6)));
+
+        if (serviceStatus.getstatusColor().equals("R")) {
+            holder.statusColorButton.setBackgroundColor(Color.RED);
+        }
+        if (serviceStatus.getstatusColor().equals("Y")) {
+            holder.statusColorButton.setBackgroundColor(Color.YELLOW);
+        }
+        if (serviceStatus.getstatusColor().equals("G")) {
+            holder.statusColorButton.setBackgroundColor(Color.GREEN);
+        }
+
     }
 
     @Override

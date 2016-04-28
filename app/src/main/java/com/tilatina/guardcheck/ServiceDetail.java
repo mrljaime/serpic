@@ -39,6 +39,9 @@ public class ServiceDetail extends AppCompatActivity {
         Bundle intent = getIntent().getExtras();
         int id = intent.getInt("id");
         int entitiesId = intent.getInt("entitiesId");
+        final double lat = intent.getDouble("lat");
+        final double lng = intent.getDouble("lng");
+
         String name = intent.getString("name", null);
         if (null != name) {
             Log.d("JAIME...", String.format("El nombre es %s, el id del evento es %s y el número de" +
@@ -107,7 +110,7 @@ public class ServiceDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO: Change harcoded lat and long
-                String uri = String.format("waze://?ll=%s, %s&navigate=yes", 19.4007304, -99.0748365);
+                String uri = String.format("waze://?ll=%s, %s&navigate=yes", lat, lng);
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
                 } catch (Exception e) {

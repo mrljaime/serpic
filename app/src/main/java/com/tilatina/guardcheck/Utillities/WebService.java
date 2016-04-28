@@ -39,7 +39,7 @@ public class WebService {
     }
 
     public interface ServicesSuccessListener {
-        void onSuccess(List<ServiceStatus> services);
+        void onSuccess(String response);
     }
 
     public interface ServicesErrorListener {
@@ -81,11 +81,45 @@ public class WebService {
         Volley.newRequestQueue(context).add(loginAction);
     }
 
-    public void getServicesAction(String user, String status, String orderBy, String sort, String search,
-                                  ServicesSuccessListener servicesSuccessListener,
-                                  ServicesErrorListener servicesErrorListener) {
+    public static void getServicesAction(Context context, final String user, final String status,
+                                         final String orderBy, final String sort, final String search,
+                                         final String lat, final String lng,
+                                         final ServicesSuccessListener servicesSuccessListener,
+                                         final ServicesErrorListener servicesErrorListener) {
 
+        String url = String.format("%s/ws/guard/getServiceList", DEV_URL);
 
+        StringRequest servicesRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(Preferences.MYPREFERENCES, "Response service action: " + response);
+                servicesSuccessListener.onSuccess(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                servicesErrorListener.onError("Error de comunicaciones");
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("user", user);
+                params.put("lat", lat);
+                params.put("lng", lng);
+                params.put("status", status);
+                params.put("orderBy", orderBy);
+                params.put("sort", sort);
+                params.put("search", search);
+
+                return params;
+            }
+        };
+
+        servicesRequest.setRetryPolicy(new DefaultRetryPolicy(10000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        Volley.newRequestQueue(context).add(servicesRequest);
     }
 
 }

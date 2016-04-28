@@ -17,12 +17,15 @@
             style="@style/Theme.AppCompat">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:text="Nombre"
                 android:id="@+id/name"
                 android:textColor="#000000"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/statusColorButton"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentTop="true" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -34,17 +37,23 @@
                 android:layout_alignParentEnd="true"
                 android:textColor="#000000" />
 
-            <TextView
+            <Button
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="StatusDate"
-                android:id="@+id/statusDate"
+                android:layout_height="wrap_content"
+                android:id="@+id/statusColorButton"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="24dp"
-                android:textColor="#282727"
-                android:textStyle="italic" />
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Texts"
+                android:id="@+id/statusDate"
+                android:layout_below="@+id/name"
+                android:layout_alignLeft="@+id/name"
+                android:layout_alignStart="@+id/name" />
 
         </RelativeLayout>
 
