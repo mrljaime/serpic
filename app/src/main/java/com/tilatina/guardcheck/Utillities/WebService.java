@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -19,16 +20,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jaime on 11/04/16.
  */
 public class WebService {
-    public static String DEV_URL = "http://192.168.4.174:8000";
+    public static String DEV_URL = "http://192.168.3.46:8090";
 
     public interface LoginSuccessListener {
-        void onSuccess(User user);
+        void onSuccess(String response);
     }
 
     public interface LoginErrorListener {
@@ -44,28 +47,19 @@ public class WebService {
     }
 
 
-    public void loginAction(String username, String password, Context context,
-                           final LoginSuccessListener loginSuccessListener,
-                           final LoginErrorListener loginErrorListener) {
+    public void loginAction(final String username, final String password, final String domain, Context context,
+                            final LoginSuccessListener loginSuccessListener,
+                            final LoginErrorListener loginErrorListener) {
 
-        String url = String.format("%s/ws/guard/login?_username=%s&_password=%s", DEV_URL,
-                URLEncoder.encode(username), URLEncoder.encode(password));
+        String url = String.format("%s/ws/guard/login", DEV_URL);
 
         Log.d("GUARD_CHECK...", String.format("URL for login actio = %s", url));
 
         StringRequest loginAction = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                User user = new User();
-
-                try {
-                    JSONObject userFromWS = new JSONObject(response);
-                    user.setId(userFromWS.getInt("id"));
-                    user.setName(userFromWS.getString("name"));
-                    loginSuccessListener.onSuccess(user);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Log.d(Preferences.MYPREFERENCES, "Response = " + response);
+                loginSuccessListener.onSuccess(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -73,9 +67,16 @@ public class WebService {
                 loginErrorListener.onError("No se pudo completar la petición");
                 Log.d("GUARD_CHECK...", String.format("LOGIN ERROR = %s", error.getCause()));
             }
-        });
-
-        loginAction.setRetryPolicy(new DefaultRetryPolicy(3000,
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("_username", String.format("%s#%s.crea.tilatina.com:8000", username, domain));
+                params.put("_password", password);
+                return params;
+            }
+        };
+        loginAction.setRetryPolicy(new DefaultRetryPolicy(10000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         Volley.newRequestQueue(context).add(loginAction);
     }
@@ -83,6 +84,7 @@ public class WebService {
     public void getServicesAction(String user, String status, String orderBy, String sort, String search,
                                   ServicesSuccessListener servicesSuccessListener,
                                   ServicesErrorListener servicesErrorListener) {
+
 
     }
 

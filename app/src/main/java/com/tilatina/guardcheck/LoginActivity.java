@@ -1,8 +1,11 @@
 package com.tilatina.guardcheck;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,28 +14,44 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tilatina.guardcheck.Dao.User;
 import com.tilatina.guardcheck.Utillities.Preferences;
 import com.tilatina.guardcheck.Utillities.WebService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class LoginActivity extends AppCompatActivity {
+
+    Context me = LoginActivity.this;
+    String domain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        /**
+         * Declartions of ui
+         */
         Button accept = (Button) findViewById(R.id.loginButton);
         final AutoCompleteTextView username = (AutoCompleteTextView) findViewById(R.id.username);
         final EditText password = (EditText) findViewById(R.id.password);
 
+        /**
+         * Searching the id from user logged, if exists, start main activity else continue.
+         */
         final SharedPreferences sharedPreferences =
                 getSharedPreferences(Preferences.MYPREFERENCES, MODE_PRIVATE);
-        String store = sharedPreferences.getString("user_id", null);
-        Log.d("JAIME...", String.format("%s", store));
+        String store = sharedPreferences.getString(Preferences.USERID, null);
+        Log.d(Preferences.MYPREFERENCES, String.format("%s", store));
 
+        /**
+         * Searching id
+         */
         if (null != store) {
             Intent intent = new Intent();
             intent.setClass(getApplicationContext(), MainActivity.class);
@@ -40,6 +59,37 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
 
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(me);
+        alertDialog.setMessage("Teclee su nombre de dominio")
+                .setView(R.layout.domain_view)
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+        final AlertDialog dialog = alertDialog.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Boolean close = false;
+                EditText domainEditText = (EditText) dialog.findViewById(R.id.domainInput);
+                if (domainEditText.getText().toString().trim().length() != 0) {
+                    domain = domainEditText.getText().toString().trim();
+                    close = true;
+                } else {
+                    domainEditText.setError("El campo es obligatorio");
+                }
+                if (close) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        /**
+         * Login button listener
+         */
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,30 +102,36 @@ public class LoginActivity extends AppCompatActivity {
 
                     WebService loginAction = new WebService();
                     loginAction.loginAction(username.getText().toString(), password.getText().toString(),
+                            domain,
                             getApplicationContext(), new WebService.LoginSuccessListener() {
                                 @Override
-                                public void onSuccess(User user) {
+                                public void onSuccess(String response) {
                                     progressDialog.dismiss();
-                                    Log.d("GUARD_CHECK...", String.format("RESPONSE ID = %s... RESPONSE NAME = " +
-                                            "%s", user.getId(), user.getName()));
-                                    String userId = String.format("%s", user.getId());
 
-                                    //Put in the preferences the user id for make request in the other activities
-                                    Preferences.putPreference(sharedPreferences, "user_id", userId);
-
-                                    //Start the main activity
-                                    Intent intent = new Intent();
-                                    intent.setClass(getApplicationContext(), MainActivity.class);
-                                    intent.putExtra("isActive", 1);
-                                    startActivity(intent);
-                                    finish();
+                                    try {
+                                        JSONObject jsonResponse = new JSONObject(response);
+                                        if (200 == jsonResponse.getInt("code")) {
+                                            Preferences.putPreference(sharedPreferences, Preferences.USERID,
+                                                    jsonResponse.getString("id"));
+                                            //Start the main activity
+                                            Intent intent = new Intent();
+                                            intent.setClass(getApplicationContext(), MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(me, "Nombre de usuario o contraseña incorrectos",
+                                                    Toast.LENGTH_LONG).show();
+                                            dialog.show();
+                                        }
+                                    }catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }, new WebService.LoginErrorListener() {
                                 @Override
                                 public void onError(String error) {
                                     progressDialog.dismiss();
-                                    Toast.makeText(LoginActivity.this, "El nombre de usuario y/o" +
-                                            " contraseña son incorrectos",
+                                    Toast.makeText(LoginActivity.this, "Error de comunicaciones",
                                             Toast.LENGTH_SHORT).show();
 
                                     cleanEditText(username, password);

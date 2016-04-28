@@ -8,6 +8,7 @@ import android.util.Log;
  */
 public class Preferences {
     public static String MYPREFERENCES = "GuardCheck";
+    public static String USERID = "user_id";
 
     public static void putPreference(SharedPreferences sharedPreferences, String key, String value) {
 
