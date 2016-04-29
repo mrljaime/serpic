@@ -6,7 +6,7 @@ import android.app.Service;
  * Created by jaime on 7/04/16.
  */
 public class ServiceStatus {
-    private int id;
+    private int id, canModify;
     private double lat;
     private double lng;
     private String name, statusColor, nextTo;
@@ -80,6 +80,16 @@ public class ServiceStatus {
 
     public double getLng() {
         return lng;
+    }
+
+    public ServiceStatus setCanModify(int canModify) {
+        this.canModify = canModify;
+
+        return this;
+    }
+
+    public int getCanModify() {
+        return canModify;
     }
 
 }
