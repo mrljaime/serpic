@@ -6,7 +6,63 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre"
+            android:id="@+id/nameOfService"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textSize="10pt"
+            android:textColor="#000000"
+            android:textAlignment="center"
+            android:padding="10dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/groupName"
+            android:layout_below="@+id/nameOfService"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textColor="#000000"
+            android:textSize="8pt"
+            android:padding="5dp"
+            android:text="Group" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="estado"
+            android:id="@+id/stateName"
+            android:layout_below="@id/groupName"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentLeft="true"
+            android:textSize="10pt"
+            android:padding="5dp"
+            android:layout_toStartOf="@+id/takeMePlace" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Frecuencia"
+            android:id="@+id/monitorFrequency"
+            android:layout_below="@id/stateName"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentLeft="true"
+            android:textSize="10pt"
+            android:padding="5dp"
+            android:layout_toLeftOf="@+id/takeMePlace"
+            android:layout_toStartOf="@+id/takeMePlace" />
 
         <Button
             android:layout_width="143dp"
@@ -15,86 +71,75 @@
             android:id="@+id/takeMePlace"
             android:background="@color/greenForActions"
             android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/groupName"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.29">
+
+
+        <Button
+            android:layout_width="143dp"
+            android:layout_height="wrap_content"
+            android:text="Arrivo"
+            android:id="@+id/arrival"
+            android:layout_gravity="right"
+            android:layout_alignTop="@+id/sendNovelty"
+            android:layout_alignParentLeft="true"
+            android:background="@color/greenForActions"
+            android:layout_alignParentStart="true"
             android:layout_marginLeft="15dp" />
 
         <Button
             android:layout_width="143dp"
             android:layout_height="wrap_content"
-            android:text="Aquí"
-            android:id="@+id/isHere"
-            android:background="@color/greenForActions"
-            android:layout_gravity="center_horizontal"
-            android:layout_alignTop="@+id/takeMePlace"
+            android:text="Novedad"
+            android:id="@+id/sendNovelty"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:background="@color/greenForActions"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="10dp" />
+            android:layout_marginRight="15dp" />
+
     </RelativeLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="277dp"
-        android:id="@+id/scrollView"
-        android:layout_marginTop="10dp">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/serviceDetailView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </ScrollView>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal">
+        android:layout_height="wrap_content"
+        android:layout_weight="0.12"
+        android:layout_marginTop="30dp">
 
-
-        <SeekBar
-            android:layout_width="wrap_content"
+        <Button
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:id="@+id/changeStatusSeek"
-            android:layout_centerVertical="true"
+            android:text="Servicio verificado"
+            android:id="@+id/okManual"
+            android:background="#cbcbcb"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:theme="@style/AppTheme"
-            android:thumb="@drawable/dontknow"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp" />
+            android:layout_marginLeft="15dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <Button
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Pendiente"
-            android:id="@+id/textView2"
-            android:layout_marginLeft="18dp"
-            android:textColor="#000000" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="En revisión"
-            android:id="@+id/textView3"
-            android:layout_alignBottom="@+id/textView2"
-            android:layout_centerHorizontal="true"
-            android:textColor="#000000" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Todo ok"
-            android:id="@+id/textView4"
+            android:text="Cambiar ubicación"
+            android:id="@+id/changePosition"
+            android:background="#cbcbcb"
+            android:layout_gravity="center_horizontal"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="10dp"
-            android:textColor="#000000" />
-
+            android:layout_marginRight="15dp" />
     </RelativeLayout>
 
 </LinearLayout>

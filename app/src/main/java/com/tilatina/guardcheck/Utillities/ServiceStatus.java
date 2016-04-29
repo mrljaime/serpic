@@ -9,7 +9,7 @@ public class ServiceStatus {
     private int id, canModify;
     private double lat;
     private double lng;
-    private String name, statusColor, nextTo;
+    private String name, statusColor, nextTo, stateName, group, monitorFrequency;
 
     public ServiceStatus(){}
 
@@ -90,6 +90,36 @@ public class ServiceStatus {
 
     public int getCanModify() {
         return canModify;
+    }
+
+    public ServiceStatus setStateName(String stateName)  {
+        this.stateName = stateName;
+
+        return this;
+    }
+
+    public String getStateName() {
+        return stateName;
+    }
+
+    public ServiceStatus setGroup(String group) {
+        this.group = group;
+
+        return this;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public ServiceStatus setMonitorFrequency(String monitorFrequency) {
+        this.monitorFrequency = monitorFrequency;
+
+        return this;
+    }
+
+    public String getMonitorFrequency() {
+        return monitorFrequency;
     }
 
 }

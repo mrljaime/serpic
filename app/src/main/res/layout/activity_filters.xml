@@ -12,51 +12,61 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Filtrar por"
-        android:id="@+id/textView5"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:textColor="#000000"
-        android:textSize="11pt" />
-
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/status_filter"
-        android:layout_below="@+id/textView5"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:spinnerMode="dropdown"
-        android:theme="@style/AppTheme" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="Ordenar por"
         android:id="@+id/textView6"
-        android:layout_below="@+id/status_filter"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="41dp"
         android:textSize="11pt"
-        android:textColor="#000000" />
+        android:textColor="#000000"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-    <Spinner
-        android:layout_width="match_parent"
+    <RadioGroup
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/sortBy"
         android:layout_below="@+id/textView6"
-        android:layout_alignRight="@+id/status_filter"
-        android:layout_alignEnd="@+id/status_filter" />
+        android:id="@+id/orderBy"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stateAndDistance"
+            android:checked="true"
+            android:text="Estado y distancia" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/nameAndDistance"
+            android:text="Nombre y distancia" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/justDistance"
+            android:text="Distancia"
+            android:checked="false" />
+    </RadioGroup>
 
-    <Spinner
-        android:layout_width="match_parent"
+    <RadioGroup
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sort"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_marginTop="22dp"
+        android:layout_below="@+id/orderBy"
+        android:layout_alignLeft="@+id/orderBy"
+        android:layout_alignStart="@+id/orderBy">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sortAsc"
+            android:checked="true"
+            android:text="Ascendente" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sordDesc"
+            android:text="Descendente" />
+    </RadioGroup>
+
 
     <Button
         android:layout_width="wrap_content"
@@ -64,11 +74,9 @@
         android:background="@color/greenForActions"
         android:text="Aplicar"
         android:id="@+id/applyFilters"
-        android:layout_below="@+id/sort"
-        android:layout_marginTop="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/sort"
-        android:layout_alignEnd="@+id/sort" />
+        android:layout_centerVertical="true"
+        android:layout_below="@id/sort"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
 
 </RelativeLayout>

@@ -21,13 +21,12 @@ public class ServiceStatusAdapter extends RecyclerView.Adapter<ServiceStatusAdap
     private List<ServiceStatus> serviceStatuses;
 
     public class GuardHolder extends RecyclerView.ViewHolder {
-        public TextView name, statusDate, nextTo;
+        public TextView name, nextTo;
         public Button statusColorButton;
 
         public GuardHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.name);
-            statusDate = (TextView) view.findViewById(R.id.statusDate);
             nextTo = (TextView) view.findViewById(R.id.nextTo);
             statusColorButton = (Button) view.findViewById(R.id.statusColorButton);
         }
@@ -55,7 +54,7 @@ public class ServiceStatusAdapter extends RecyclerView.Adapter<ServiceStatusAdap
         }
         ServiceStatus serviceStatus = serviceStatuses.get(position);
         holder.name.setText(serviceStatus.getName());
-        holder.nextTo.setText(String.format("%s km",serviceStatus.getNextTo().substring(0, 6)));
+        holder.nextTo.setText(String.format("%.1f km", Double.parseDouble(serviceStatus.getNextTo())));
 
         if (serviceStatus.getstatusColor().equals("R")) {
             holder.statusColorButton.setBackgroundColor(Color.RED);

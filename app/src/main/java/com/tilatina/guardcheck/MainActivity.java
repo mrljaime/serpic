@@ -80,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("lat", serviceStatus.getLat());
                 intent.putExtra("lng", serviceStatus.getLng());
                 intent.putExtra("canModify", serviceStatus.getCanModify());
+                intent.putExtra("stateName", serviceStatus.getStateName());
+                intent.putExtra("group", serviceStatus.getGroup());
+                intent.putExtra("monitorFrequency", serviceStatus.getMonitorFrequency());
+                intent.putExtra("stateColor", serviceStatus.getstatusColor());
                 startActivity(intent);
             }
 
@@ -126,9 +130,20 @@ public class MainActivity extends AppCompatActivity {
             case R.id.search:
                 dialogForSearch(me);
                 return false;
+            case R.id.refresh:
+                prepareServicesData(me);
+                return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d(Preferences.MYPREFERENCES, "On resume");
+        //prepareServicesData(me);
     }
 
     @Override
@@ -205,6 +220,9 @@ public class MainActivity extends AppCompatActivity {
         Location location = LocationGPS.getCurrentLocation(context);
         if (null == location) {
             Toast.makeText(context, "No se ha podido tomar posición", Toast.LENGTH_SHORT).show();
+            progresDialog.hide();
+            swipeToRefresh.setRefreshing(false);
+
             return;
         }
 
@@ -230,6 +248,9 @@ public class MainActivity extends AppCompatActivity {
                                 serviceStatus.setLng(services.getJSONObject(i).getDouble("lng"));
                                 serviceStatus.setstatusColor(services.getJSONObject(i).getString("statusColor"));
                                 serviceStatus.setCanModify(services.getJSONObject(i).getInt("canModify"));
+                                serviceStatus.setStateName(services.getJSONObject(i).getString("stateName"));
+                                serviceStatus.setMonitorFrequency(services.getJSONObject(i).getString("monitorFrequency"));
+                                serviceStatus.setGroup(services.getJSONObject(i).getString("groupName"));
 
                                 serviceStatusList.add(serviceStatus);
                             }
@@ -237,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
                             progresDialog.hide();
                             mAdapter.notifyDataSetChanged();
                             swipeToRefresh.setRefreshing(false);
+                            cleanFiltersStrings();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -256,19 +278,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void transformFilters(Intent data) {
 
-        if (data.getStringExtra("filter").equals("Todos")) {
-            status = "all";
-        } else if (data.getStringExtra("filter").equals("Rojo")) {
-            status = "R";
-        } else if (data.getStringExtra("filter").equals("Amarillo")) {
-            status = "Y";
-        } else if (data.getStringExtra("filter").equals("Verde")) {
-            status = "G";
-        }
-
-        if (data.getStringExtra("sortBy").equals("Nombre")) {
+        if (data.getStringExtra("sortBy").equals("Nombre y distancia")) {
             orderBy = "1";
-        } else if (data.getStringExtra("sortBy").equals("Estado/Fecha")) {
+        } else if (data.getStringExtra("sortBy").equals("Estado y distancia")) {
             orderBy = "2";
         } else if (data.getStringExtra("sortBy").equals("Distancia")) {
             orderBy = "3";
@@ -281,7 +293,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void dialogForSearch(Context context) {
+    private void cleanFiltersStrings(){
+        status = "";
+        orderBy = "";
+        sort = "";
+        search = "";
+    }
+
+    private void dialogForSearch(Context context) {
         final Context mContext = context;
         AlertDialog.Builder alerBuilder = new AlertDialog.Builder(mContext);
         alerBuilder.setMessage("Búsqueda");

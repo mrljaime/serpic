@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -19,7 +21,16 @@ import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.tilatina.guardcheck.Utillities.LocationGPS;
+import com.tilatina.guardcheck.Utillities.Preferences;
+import com.tilatina.guardcheck.Utillities.WebService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +39,7 @@ import java.util.List;
 public class ServiceDetail extends AppCompatActivity {
 
     private SeekBar seekBar;
-    private int MAX_SEEK_VALUE = 4;
+    private int MAX_SEEK_VALUE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,116 +48,137 @@ public class ServiceDetail extends AppCompatActivity {
 
         //Handle information requested by MainActivity
         Bundle intent = getIntent().getExtras();
-        int id = intent.getInt("id");
-        int entitiesId = intent.getInt("entitiesId");
+        final int elementId = intent.getInt("id");
         final double lat = intent.getDouble("lat");
         final double lng = intent.getDouble("lng");
-
         String name = intent.getString("name", null);
+        String stateName = intent.getString("stateName");
+        String monitorFrequency = intent.getString("monitorFrequency");
+        String group = intent.getString("group");
+        String stateColor = intent.getString("stateColor");
+        int canModify = intent.getInt("canModify");
+
         if (null != name) {
-            Log.d("JAIME...", String.format("El nombre es %s, el id del evento es %s y el número de" +
-                    " servicio es %s", name, id, entitiesId));
         } else {
             Log.d("JAIME...", String.format("Nada que comentar"));
         }
+
+
+        /**
+         * Get the id of the user
+         */
+        final String user = Preferences
+                .getPreference(getSharedPreferences(Preferences.MYPREFERENCES, MODE_PRIVATE), Preferences.USERID, null);
 
         //This will change de text of the action bar for the name of the service.
         getSupportActionBar().setTitle(name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        //Seek bar for status
-        seekBar = (SeekBar) findViewById(R.id.changeStatusSeek);
-        seekBar.setMax(MAX_SEEK_VALUE);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.d("JAIME...", String.format("Progreso = %s", progress));
+        TextView nameService = (TextView) findViewById(R.id.nameOfService);
+        nameService.setText(name);
 
-                if (progress == 0) {
-                    Drawable icon = getResources().getDrawable(R.drawable.dontknow);
-                    seekBar.setThumb(icon);
-                }
+        TextView groupText = (TextView) findViewById(R.id.groupName);
+        groupText.setText("Grupo: " + group);
 
-                //The multiple of progress change is of one,
-                //For put the progress in the center of the
-                // field, when progress is equals to 1, the progress is seted in 2
-                if (progress == 1) {
-                    seekBar.setProgress(2);
+        TextView monitorFrequencyText = (TextView) findViewById(R.id.monitorFrequency);
+        monitorFrequencyText.setText("Frecuencia de monitoreo (hrs): " + monitorFrequency);
 
-                //For put the progress in the end of the field, when progress is equals to 3,
-                // the progress is set in 4
-                } else if (progress == 3) {
-                    seekBar.setProgress(4);
+        TextView stateText = (TextView) findViewById(R.id.stateName);
+        stateText.setText(stateName);
 
-                }
+        if ("R".equals(stateColor)) {
+            stateText.setTextColor(Color.RED);
+        } else if ("Y".equals(stateColor)) {
+            stateText.setTextColor(Color.YELLOW);
+        } else {
+            stateText.setTextColor(Color.GREEN);
+        }
 
-                //TODO: Make then async task occur here for put status in the web service for "View"
-                if (progress == 2) {
-                    Drawable icon = getResources().getDrawable(R.drawable.view);
-                    seekBar.setThumb(icon);
-                }
 
-                //TODO: Make then async task occur here for put status in the web service for "Everything OK"
-                if (progress == 4) {
-                    Drawable icon = getResources().getDrawable(R.drawable.ok);
-                    seekBar.setThumb(icon);
-                }
+        /**
+         * Buttons declartion
+         */
+        Button takeMePlace = (Button) findViewById(R.id.takeMePlace);
+        Button arrivalButton = (Button) findViewById(R.id.arrival);
+        Button noveltyButton = (Button) findViewById(R.id.sendNovelty);
+        final Button okManualButton = (Button) findViewById(R.id.okManual);
+        Button changePositionButton = (Button) findViewById(R.id.changePosition);
 
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-
+        /**
+         * If can't modify, the button okManual will be disabled
+         */
+        if (1 != canModify) {
+            okManualButton.setEnabled(false);
+        }
 
         //This button make a intent to Waze to take the user to specific place.
-        Button takeMePlace = (Button) findViewById(R.id.takeMePlace);
         takeMePlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Change harcoded lat and long
-                String uri = String.format("waze://?ll=%s, %s&navigate=yes", lat, lng);
-                try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
-                } catch (Exception e) {
-                    new AlertDialog.Builder(ServiceDetail.this)
-                            .setTitle("")
-                            .setMessage("Necesitas instalar Waze para ser llevado al destino.")
-                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            }).show();
+
+                Location location = LocationGPS.getCurrentLocation(ServiceDetail.this);
+                if (null == location) {
+                    return;
                 }
 
+                if (checkPackageExist(ServiceDetail.this, "com.waze")) {
+
+                    String uri = String.format("waze://?ll=%s, %s&navigate=yes", lat, lng);
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
+                    } catch (Exception e) {
+                        new AlertDialog.Builder(ServiceDetail.this)
+                                .setTitle("")
+                                .setMessage("Necesitas instalar Waze para ser llevado al destino.")
+                                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+                    }
+                } else {
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse(String.format("http://maps.google.com/maps?saddr=%s,%s&daddr=%s,%s",
+                                    location.getLatitude(), location.getLongitude(), lat, lng
+                            )));
+                    startActivity(intent);
+                }
             }
         });
 
         //This button put lat and long from the service place.
-        Button isHere = (Button) findViewById(R.id.isHere);
-        isHere.setOnClickListener(new View.OnClickListener() {
+        changePositionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 new AlertDialog.Builder(ServiceDetail.this)
                         .setTitle("")
-                        .setMessage("¿Confirma cambiar la ubicación del servicio?")
+                        .setMessage("¿Confirma que desea cambiar la ubicación del servicio a su posición actual?")
                         .setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                double[] latLng = getLatLong();
-                                if (null != latLng) {
-                                    Toast.makeText(getApplicationContext(),
-                                            String.format("Latitud = %s, Longitud = %s", latLng[0], latLng[1]),
-                                            Toast.LENGTH_SHORT)
-                                            .show();
+
+                                Location location = LocationGPS.getCurrentLocation(ServiceDetail.this);
+                                if (null == location) {
+                                    return;
                                 }
+
+                                WebService.changePositionAction(ServiceDetail.this, user,
+                                        String.format("%s",elementId),
+                                        String.format("%s", location.getLatitude()),
+                                        String.format("%s", location.getLongitude()), new WebService.ChangePositionListener() {
+                                            @Override
+                                            public void onSuccess(String response) {
+                                                Toast.makeText(ServiceDetail.this, "Ubicación de servicio acualizada con éxito",
+                                                        Toast.LENGTH_SHORT).show();
+                                            }
+                                            @Override
+                                            public void onError(String error) {
+                                                Toast.makeText(ServiceDetail.this, "Error de comunicaciones",
+                                                        Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                             }
                         })
                         .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -158,7 +190,30 @@ public class ServiceDetail extends AppCompatActivity {
                         .show();
             }
         });
+
+
+        okManualButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WebService.makeOkManualAction(ServiceDetail.this, user, String.format("%s", elementId),
+                        new WebService.MakeOkManualListener() {
+                    @Override
+                    public void onSuccess(String response) {
+                        okManualButton.setEnabled(false);
+                        Toast.makeText(ServiceDetail.this, "Ok manual enviado con éxito", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Toast.makeText(ServiceDetail.this, "Error de comunicaciones", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -220,4 +275,19 @@ public class ServiceDetail extends AppCompatActivity {
                 .show();
     }
 
+
+    private boolean checkPackageExist(Context context, String packageName) {
+
+        PackageManager packageManager = context.getPackageManager();
+
+        try {
+            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+
+            return false;
+        }
+    }
 }
