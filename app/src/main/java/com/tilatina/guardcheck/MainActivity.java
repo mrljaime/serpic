@@ -244,8 +244,18 @@ public class MainActivity extends AppCompatActivity {
                                 serviceStatus.setId(services.getJSONObject(i).getInt("id"));
                                 serviceStatus.setName(services.getJSONObject(i).getString("name"));
                                 serviceStatus.setNextTo(services.getJSONObject(i).getString("distance"));
-                                serviceStatus.setLat(services.getJSONObject(i).getDouble("lat"));
-                                serviceStatus.setLng(services.getJSONObject(i).getDouble("lng"));
+
+                                if (!JSONObject.NULL.equals(services.getJSONObject(i).get("lat"))) {
+                                    serviceStatus.setLat(services.getJSONObject(i).getDouble("lat"));
+                                } else {
+                                    serviceStatus.setLat(0);
+                                }
+                                if (!JSONObject.NULL.equals(services.getJSONObject(i).get("lng"))) {
+                                    serviceStatus.setLng(services.getJSONObject(i).getDouble("lng"));
+                                } else {
+                                    serviceStatus.setLng(0);
+                                }
+
                                 serviceStatus.setstatusColor(services.getJSONObject(i).getString("statusColor"));
                                 serviceStatus.setCanModify(services.getJSONObject(i).getInt("canModify"));
                                 serviceStatus.setStateName(services.getJSONObject(i).getString("stateName"));
@@ -261,6 +271,10 @@ public class MainActivity extends AppCompatActivity {
                             cleanFiltersStrings();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            progresDialog.hide();
+                            mAdapter.notifyDataSetChanged();
+                            swipeToRefresh.setRefreshing(false);
+                            cleanFiltersStrings();
                         }
 
                     }
@@ -321,5 +335,13 @@ public class MainActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+    }
+
+    private boolean diffNull(String value) {
+        if (null == value) {
+            return false;
+        }
+
+        return true;
     }
 }

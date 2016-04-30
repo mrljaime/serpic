@@ -40,7 +40,8 @@ import java.util.Map;
  * Created by jaime on 11/04/16.
  */
 public class WebService {
-    public static String DEV_URL = "http://192.168.3.46:8090";
+    //public static String DEV_URL = "http://192.168.3.46:8090";
+    public static String DEV_URL = "http://ws.tilatina.com";
 
     public interface LoginSuccessListener {
         void onSuccess(String response);
@@ -106,7 +107,7 @@ public class WebService {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("_username", String.format("%s#%s.crea.tilatina.com:8000", username, domain));
+                params.put("_username", String.format("%s#%s.creacontrol.mx", username, domain));
                 params.put("_password", password);
                 return params;
             }
@@ -275,8 +276,10 @@ public class WebService {
 
                         // open a URL connection to the Servlet
                         FileInputStream fileInputStream = new FileInputStream(sourceFile);
-                        URL url = new URL(String.format("%s/%s/noveltyMonitor?%s",
-                                DEV_URL, element, queryString));
+                        URL url = new URL(String.format("%s/ws/guard/noveltyMonitor?user=%s&element=%s&%s",
+                                DEV_URL, Preferences.getPreference(context
+                                        .getSharedPreferences(Preferences.MYPREFERENCES, Context.MODE_PRIVATE),
+                                        Preferences.USERID, null), element, queryString));
                         Log.d("FileUploader", String.format("Uploading to %s", url.toString()));
 
                         // Open a HTTP  connection to  the URL
@@ -373,10 +376,10 @@ public class WebService {
     }
 
 
-    public static void sendNoveltyWithOutPicture(Context context, final Map<String, String> params, String element,
+    public static void sendNoveltyWithOutPicture(final Context context, final Map<String, String> params, final String element,
                                                  final sendNoveltyListener sendNoveltyListener) {
 
-        String url = String.format("%s/%s/noveltyWithOutMonitor", DEV_URL, element);
+        String url = String.format("%s/ws/guard/noveltyWithOutMonitor", DEV_URL);
         Log.d(Preferences.MYPREFERENCES, String.format("URL = %s", url));
 
         StringRequest sendNovelty = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -393,6 +396,10 @@ public class WebService {
         }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
+                params.put("element", element);
+                params.put("user", Preferences.getPreference(context
+                        .getSharedPreferences(Preferences.MYPREFERENCES, Context.MODE_PRIVATE),
+                        Preferences.USERID, null));
                 return params;
             }
         };
@@ -403,5 +410,4 @@ public class WebService {
         Volley.newRequestQueue(context).add(sendNovelty);
 
     }
-
 }

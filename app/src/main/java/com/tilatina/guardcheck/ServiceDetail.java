@@ -40,6 +40,16 @@ public class ServiceDetail extends AppCompatActivity {
 
     private SeekBar seekBar;
     private int MAX_SEEK_VALUE = 1;
+    /**
+     * Buttons declartion
+     */
+    Button takeMePlace;
+    Button arrivalButton;
+    Button noveltyButton;
+    Button okManualButton;
+    Button changePositionButton;
+    Button stateColorDetail;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +68,22 @@ public class ServiceDetail extends AppCompatActivity {
         String stateColor = intent.getString("stateColor");
         int canModify = intent.getInt("canModify");
 
+
+        takeMePlace = (Button) findViewById(R.id.takeMePlace);
+        arrivalButton = (Button) findViewById(R.id.arrival);
+        noveltyButton = (Button) findViewById(R.id.sendNovelty);
+        okManualButton = (Button) findViewById(R.id.okManual);
+        changePositionButton = (Button) findViewById(R.id.changePosition);
+        stateColorDetail = (Button) findViewById(R.id.stateColorDetail);
+
+
         if (null != name) {
         } else {
             Log.d("JAIME...", String.format("Nada que comentar"));
+        }
+
+        if (lat == 0 && lng == 0) {
+            takeMePlace.setEnabled(false);
         }
 
 
@@ -82,28 +105,21 @@ public class ServiceDetail extends AppCompatActivity {
         groupText.setText("Grupo: " + group);
 
         TextView monitorFrequencyText = (TextView) findViewById(R.id.monitorFrequency);
-        monitorFrequencyText.setText("Frecuencia de monitoreo (hrs): " + monitorFrequency);
+        monitorFrequencyText.setText("Frecuencia: " + monitorFrequency);
 
         TextView stateText = (TextView) findViewById(R.id.stateName);
         stateText.setText(stateName);
 
         if ("R".equals(stateColor)) {
-            stateText.setTextColor(Color.RED);
+            stateColorDetail.setBackgroundColor(Color.RED);
         } else if ("Y".equals(stateColor)) {
-            stateText.setTextColor(Color.YELLOW);
+            stateColorDetail.setBackgroundColor(Color.YELLOW);
         } else {
-            stateText.setTextColor(Color.GREEN);
+            stateColorDetail.setBackgroundColor(Color.GREEN);
         }
 
 
-        /**
-         * Buttons declartion
-         */
-        Button takeMePlace = (Button) findViewById(R.id.takeMePlace);
-        Button arrivalButton = (Button) findViewById(R.id.arrival);
-        Button noveltyButton = (Button) findViewById(R.id.sendNovelty);
-        final Button okManualButton = (Button) findViewById(R.id.okManual);
-        Button changePositionButton = (Button) findViewById(R.id.changePosition);
+
 
         /**
          * If can't modify, the button okManual will be disabled
@@ -195,19 +211,44 @@ public class ServiceDetail extends AppCompatActivity {
         okManualButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WebService.makeOkManualAction(ServiceDetail.this, user, String.format("%s", elementId),
-                        new WebService.MakeOkManualListener() {
-                    @Override
-                    public void onSuccess(String response) {
-                        okManualButton.setEnabled(false);
-                        Toast.makeText(ServiceDetail.this, "Ok manual enviado con éxito", Toast.LENGTH_SHORT).show();
-                    }
 
-                    @Override
-                    public void onError(String error) {
-                        Toast.makeText(ServiceDetail.this, "Error de comunicaciones", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                new AlertDialog.Builder(ServiceDetail.this)
+                        .setTitle("")
+                        .setMessage("¿Confirma que desea poner ok manual al servicio?")
+                        .setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                Location location = LocationGPS.getCurrentLocation(ServiceDetail.this);
+                                if (null == location) {
+                                    return;
+                                }
+
+                                WebService.makeOkManualAction(ServiceDetail.this, user, String.format("%s", elementId),
+                                        new WebService.MakeOkManualListener() {
+                                            @Override
+                                            public void onSuccess(String response) {
+                                                okManualButton.setEnabled(false);
+                                                Toast.makeText(ServiceDetail.this, "Ok manual enviado con éxito", Toast.LENGTH_SHORT).show();
+                                            }
+
+                                            @Override
+                                            public void onError(String error) {
+                                                Toast.makeText(ServiceDetail.this, "Error de comunicaciones", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        }).show();
+            }
+        });
+
+
+        noveltyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ServiceDetail.this, NoveltyActivity.class);
+                intent.putExtra("element", elementId);
+                startActivity(intent);
             }
         });
 
@@ -224,41 +265,6 @@ public class ServiceDetail extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    //This method will change, but for now, is for get the lat and the long of the device.
-    private double[] getLatLong() {
-        LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        Location location;
-        double [] latLng = null;
-        try {
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                Log.d("JAIME...", "El problema esta en que no hay gps encendido");
-                printLocationError("No se ha podido obtener localización, por favor encienda sus datos y/o " +
-                        "gps para poder obtenerla");
-                return latLng;
-            }
-
-            if (null != locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)) {
-                Log.d("JAIME...", "Debería dar posición por la comprobación GPS");
-                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                latLng = new double[] {location.getLatitude(), location.getLongitude()};
-
-                return latLng;
-            }
-
-            if (null != locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)) {
-                Log.d("JAIME...", "Debería dar posición por la comprobación NETWORK");
-                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                latLng = new double[] {location.getLatitude(), location.getLongitude()};
-
-                return latLng;
-            }
-        }catch (SecurityException e) {
-            printLocationError("Debes aceptar los permisos para poder utilizar la geolocalización");
-        }
-
-        return latLng;
     }
 
     //This method is called for display error message when GPS is disabled

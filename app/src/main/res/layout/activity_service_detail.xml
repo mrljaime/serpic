@@ -33,36 +33,38 @@
             android:layout_below="@+id/nameOfService"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:textColor="#000000"
             android:textSize="8pt"
             android:padding="5dp"
-            android:text="Group" />
+            android:text="Group"
+            android:layout_toStartOf="@+id/stateName"
+            android:layout_alignRight="@+id/stateName"
+            android:layout_alignEnd="@+id/stateName" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="estado"
             android:id="@+id/stateName"
-            android:layout_below="@id/groupName"
-            android:layout_alignParentStart="false"
-            android:layout_alignParentLeft="true"
             android:textSize="10pt"
             android:padding="5dp"
-            android:layout_toStartOf="@+id/takeMePlace" />
+            android:layout_alignTop="@+id/stateColorDetail"
+            android:layout_toRightOf="@+id/stateColorDetail"
+            android:layout_toEndOf="@+id/stateColorDetail"
+            android:layout_marginTop="2dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Frecuencia"
             android:id="@+id/monitorFrequency"
-            android:layout_below="@id/stateName"
-            android:layout_alignParentStart="false"
-            android:layout_alignParentLeft="true"
-            android:textSize="10pt"
+            android:textSize="8pt"
             android:padding="5dp"
-            android:layout_toLeftOf="@+id/takeMePlace"
-            android:layout_toStartOf="@+id/takeMePlace" />
+            android:layout_alignBottom="@+id/groupName"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textColor="#000000"
+            android:layout_toRightOf="@+id/stateName"
+            android:layout_toEndOf="@+id/stateName" />
 
         <Button
             android:layout_width="143dp"
@@ -77,6 +79,15 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp" />
 
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/stateColorDetail"
+            android:layout_alignTop="@+id/takeMePlace"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -89,7 +100,7 @@
         <Button
             android:layout_width="143dp"
             android:layout_height="wrap_content"
-            android:text="Arrivo"
+            android:text="Arribo"
             android:id="@+id/arrival"
             android:layout_gravity="right"
             android:layout_alignTop="@+id/sendNovelty"

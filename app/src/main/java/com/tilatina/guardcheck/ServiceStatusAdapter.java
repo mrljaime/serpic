@@ -54,7 +54,14 @@ public class ServiceStatusAdapter extends RecyclerView.Adapter<ServiceStatusAdap
         }
         ServiceStatus serviceStatus = serviceStatuses.get(position);
         holder.name.setText(serviceStatus.getName());
-        holder.nextTo.setText(String.format("%.1f km", Double.parseDouble(serviceStatus.getNextTo())));
+
+        if (serviceStatus.getNextTo().contains("geolocalizado")) {
+            holder.nextTo.setText("Sin localización");
+        } else {
+            holder.nextTo.setText(String.format("%.1f km", Double.parseDouble(serviceStatus.getNextTo())));
+        }
+
+
 
         if (serviceStatus.getstatusColor().equals("R")) {
             holder.statusColorButton.setBackgroundColor(Color.RED);
